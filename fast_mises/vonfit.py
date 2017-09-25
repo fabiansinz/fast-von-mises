@@ -20,15 +20,19 @@ def von_mises2(phi, a0, a1, a2, theta, w):
     return a0 + a1 * g(c, w) + a2 * g(-c, w)
 
 
-def fit_von_mises2(phi, x):
+def fit_von_mises2(phi, x, balanced=True):
     """
     :input phi: 1D vector of equidistally distributed angles between 0 and 2*pi
     :input x:  1D vector of response magnitudes at those angles
     :output: v, r2 - where v is the list of the fitted coefficients and r2 is squared error
     """
     # estimate theta with two-cosine fit
-    xu, ix, cu = np.unique(x, return_counts=True, return_index=True)
-    s = (xu / cu) @ np.exp(2j * phi[ix])
+    if balanced:
+        s = x @ np.exp(2j * phi)
+    else:
+        xu, ix, cu = np.unique(x, return_counts=True, return_index=True)
+        s = (xu / cu) @ np.exp(2j * phi[ix])
+
     theta = 0.5 * np.angle(s)
     xm = x.mean()
     x = x - xm
