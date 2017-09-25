@@ -65,7 +65,7 @@ def fit_von_mises2(phi, x, balanced=True):
     return (xm - a @ gm, a[0], a[1], theta % (2 * np.pi), w), r2
 
 
-def bootstrap_von_mises2(phi, x, shuffles=5000):
-    v, r2 = fit_von_mises2(phi, x)
-    return v, r2, np.array([fit_von_mises2(phi, np.random.choice(x, x.shape))[1] < r2
-                            for shuffle in range(shuffles)]).mean() + 0.5 / shuffles
+def bootstrap_von_mises2(phi, x, shuffles=5000, **kwargs):
+    v, r2 = fit_von_mises2(phi, x, **kwargs)
+    return v, r2, np.array([fit_von_mises2(phi, np.random.choice(x, x.shape), **kwargs)[1] < r2
+                            for _ in range(shuffles)]).mean() + 0.5 / shuffles
